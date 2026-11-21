@@ -25,14 +25,15 @@
                     <!--
                ######################################################### Languages ################################################################
                        -->
+{{-- ######################## الإعدادات واللغات: دور admin فقط ######################## --}}
                     @role('admin')
 					<li class="side-item side-item-category">{{__('admin/sidebar.main')}}</li>
 					<li class="slide">
 						<a class="side-menu__item" href="{{ url('/' . $page='index') }}"><i class="las la-globe-africa custom-icon" ></i><span class="side-menu__label">{{__('general.lang')}}</span><span class="badge badge-success side-badge">2</span></a>
 					</li>
-                        <!--
-                ######################################################### Settings ################################################################
-                        -->
+                    <!--
+            ######################################################### Settings ################################################################
+                    -->
                     <li class="slide">
                         <a class="side-menu__item" data-toggle="slide" href="{{ url('/' . $page='#') }}"><i class="las la-tools custom-icon" ></i><span class="side-menu__label">{{__('admin/sidebar.settings')}}</span><i class="angle fe fe-chevron-down"></i></a>
                         <ul class="slide-menu">
@@ -40,17 +41,41 @@
                         </ul>
                     </li>
                     @endrole
+{{-- ######################## الإدارة: المستخدمين والأدوار ######################## --}}
+                    @role('admin')
+                    <li class="side-item side-item-category">{{__('auth.admin')}}</li>
+                    <li class="slide">
+                        <a class="side-menu__item" data-toggle="slide" href="{{ url('/' . $page='#') }}"><i class="las la-users custom-icon"></i><span class="side-menu__label">{{__('admin/sidebar.account')}}</span><i class="angle fe fe-chevron-down"></i></a>
+                        <ul class="slide-menu">
+                            <li><a class="slide-item" href="{{ route('admin.account.admin-list') }}">{{__('admin/body.view all')}}</a></li>
+                            <li><a class="slide-item" href="{{ route('admin.account.register') }}">{{__('general.add').' '.__('admin/sidebar.account')}}</a></li>
+                        </ul>
+                    </li>
+                    @can('view-roles')
+                    <li class="slide">
+                        <a class="side-menu__item" data-toggle="slide" href="{{ url('/' . $page='#') }}"><i class="fa-solid fa-shield-halved custom-icon"></i><span class="side-menu__label">{{__('admin/sidebar.roles')}}</span><i class="angle fe fe-chevron-down"></i></a>
+                        <ul class="slide-menu">
+                            <li><a class="slide-item" href="{{ route('admin.roles.index') }}">{{__('admin/body.view all')}}</a></li>
+                            @can('create-role')
+                            <li><a class="slide-item" href="{{ route('admin.roles.add') }}">{{__('general.add').' '.__('admin/sidebar.roles')}}</a></li>
+                            @endcan
+                        </ul>
+                    </li>
+                    @endcan
+                    @endrole
+{{-- ######################## المحتوى: الأقسام والنكهات والتحميص والمنتجات (view-catalog) ######################## --}}
+                    @can('view-catalog')
+					<li class="side-item side-item-category">{{__('admin/body.content')}}</li>
                     <!--
             ######################################################### Category ################################################################
                     -->
-                    @role('admin|branch manager')
-					<li class="side-item side-item-category">{{__('admin/body.content')}}</li>
 					<li class="slide">
                         <a class="side-menu__item" data-toggle="slide" href="{{ url('/' . $page='#') }}"><i class="fa-solid fa-layer-group custom-icon"></i><span class="side-menu__label">{{__('admin/sidebar.category')}}</span><i class="angle fe fe-chevron-down"></i></span><span class="badge badge-success side-badge"></span></a>
                         <ul class="slide-menu">
                             <li><a class="slide-item" href="{{ route('admin.category') }}">{{__('admin/body.view all')}}</a></li>
+                            @can('create-catalog')
                             <li><a class="slide-item" href="{{ route('admin.category.add') }}">{{__('admin/sidebar.add category')}}</a></li>
-
+                            @endcan
                             <!--
              ######################################################### Sub Category ################################################################
                      -->
@@ -58,21 +83,23 @@
                                 <a class="sub-side-menu__item" data-toggle="sub-slide" href="{{ url('/' . $page='#') }}"><span class="sub-side-menu__label">{{__('admin/sidebar.sub category')}}</span><i class="sub-angle fe fe-chevron-down"></i></a>
                                 <ul class="sub-slide-menu">
                                     <li><a class="sub-slide-item" href="{{ route('admin.subCategory') }}">{{__('admin/body.view all')}}</a></li>
+                                    @can('create-catalog')
                                     <li><a class="sub-slide-item" href="{{ route('admin.subCategory.add') }}">{{__('general.add')}} {{__('admin/sidebar.sub category')}}</a></li>
+                                    @endcan
                                 </ul>
                             </li>
                         </ul>
                     </li>
-                    @endrole
-                <!--
+                    <!--
             ######################################################### flavor ################################################################
                     -->
-                    @hasanyrole('admin|branch manager|cashier')
                     <li class="slide">
                         <a class="side-menu__item" data-toggle="slide" href="{{ url('/' . $page='#') }}"><i class="fa-solid fa-wheat-awn custom-icon"></i><span class="side-menu__label">{{__('admin/sidebar.flavor')}}</span><i class="angle fe fe-chevron-down"></i><span class="badge badge-success side-badge"></span></a>
                         <ul class="slide-menu">
                             <li><a class="slide-item" href="{{ route('admin.flavor') }}">{{__('admin/body.view all')}}</a></li>
+                            @can('create-catalog')
                             <li><a class="slide-item" href="{{ route('admin.flavor.add') }}">{{__('general.add')}} {{__('admin/sidebar.flavor')}}</a></li>
+                            @endcan
                         </ul>
                     </li>
                     <!--
@@ -83,7 +110,9 @@
                             <span class="side-menu__label">{{__('admin/sidebar.roast level')}}</span><i class="angle fe fe-chevron-down"></i><span class="badge badge-success side-badge"></span></a>
                         <ul class="slide-menu">
                             <li><a class="slide-item" href="{{ route('admin.roastLevels') }}">{{__('admin/body.view all')}}</a></li>
+                            @can('create-catalog')
                             <li><a class="slide-item" href="{{ route('admin.roastLevels.add') }}">{{__('general.add').' '.__('admin/sidebar.roast level')}}</a></li>
+                            @endcan
                         </ul>
                     </li>
                     <!--
@@ -94,14 +123,17 @@
                             <span class="side-menu__label">{{__('admin/sidebar.product')}}</span><i class="angle fe fe-chevron-down"></i><span class="badge badge-success side-badge"></span></a>
                         <ul class="slide-menu">
                             <li><a class="slide-item" href="{{ route('admin.product') }}">{{__('admin/body.view all')}}</a></li>
+                            @can('create-catalog')
                             <li><a class="slide-item" href="{{ route('admin.product.add') }}">{{__('admin/sidebar.add product')}}</a></li>
+                            @endcan
                         </ul>
                     </li>
-                    @endhasanyrole
-                        <!--
-                ######################################################### Branch ################################################################
-                        -->
+                    @endcan
+{{-- ######################## الفروع: مقفولة على admin في الـ routes (لحد قرار نطاق الفروع) ######################## --}}
                     @role('admin')
+                    <!--
+            ######################################################### Branch ################################################################
+                    -->
 					<li class="slide">
 						<a class="side-menu__item" data-toggle="slide" href="{{ url('/' . $page='#') }}"><span class="material-symbols-outlined custom-icon">gite</span>
                             <span class="side-menu__label">{{__('admin/sidebar.branches')}}</span><i class="angle fe fe-chevron-down"></i></a>
@@ -112,45 +144,57 @@
 					</li>
                     @endrole
 {{--                ######################################################### Start Storage ################################################################--}}
-                    @hasanyrole('admin|warehouse manager|warehouse keeper')
+                    @canany(['view-units', 'view-suppliers', 'view-material-categories', 'view-materials', 'view-warehouses', 'create-purchase-order', 'approve-purchase-order'])
                     <li class="side-item side-item-category">{{__('admin/sidebar.storage')}}</li>
+                    @endcanany
 {{--                     ################################################## Unit ################################################################--}}
-
+                    @can('view-units')
 					<li class="slide">
 						<a class="side-menu__item" data-toggle="slide" href="{{ url('/' . $page='#') }}"><i class="fa-brands fa-ubuntu custom-icon"></i>
                             <span class="side-menu__label">{{__('admin/sidebar.unit')}}</span><i class="angle fe fe-chevron-down"></i></a>
 						<ul class="slide-menu">
                             <li><a class="slide-item" href="{{ route('admin.unit') }}">{{__('admin/body.view all')}}</a></li>
+                            @can('create-unit')
 							<li><a class="slide-item" href="{{ route('admin.unit.add') }}">{{__('general.add').' '.__('admin/sidebar.unit')}}</a></li>
+                            @endcan
                             <li class="sub-slide">
                                 <a class="sub-side-menu__item" data-toggle="sub-slide" href="{{ url('/' . $page='#') }}"><span class="sub-side-menu__label">{{__('admin/sidebar.base unit')}}</span><i class="sub-angle fe fe-chevron-down"></i></a>
                                 <ul class="sub-slide-menu">
                                     <li><a class="sub-slide-item" href="{{ route('admin.baseUnit') }}">{{__('admin/body.view all')}}</a></li>
+                                    @can('create-unit')
                                     <li><a class="sub-slide-item" href="{{ route('admin.baseUnit.add') }}">{{__('general.add').' '.__('admin/sidebar.base unit')}}</a></li>
+                                    @endcan
                                 </ul>
                             </li>
 						</ul>
 					</li>
-                        <!--
-                         ################################################## Supplier ################################################################
-                         -->
+                    @endcan
+                    <!--
+                     ################################################## Supplier ################################################################
+                     -->
+                    @can('view-suppliers')
                     <li class="slide">
                         <a class="side-menu__item" data-toggle="slide" href="{{ url('/' . $page='#') }}"><img width="30" height="30" class="custom-icon" src="https://img.icons8.com/glyph-neue/64/supplier.png" alt="supplier"/>
                             <span class="side-menu__label">{{__('admin/sidebar.suppliers')}}</span><i class="angle fe fe-chevron-down"></i></a>
                         <ul class="slide-menu">
                             <li><a class="slide-item" href="{{ route('admin.supplier') }}">{{__('admin/body.view all')}}</a></li>
+                            @can('create-supplier')
                             <li><a class="slide-item" href="{{ route('admin.supplier.add') }}">{{__('general.add').' '.__('admin/sidebar.suppliers')}}</a></li>
+                            @endcan
                         </ul>
                     </li>
+                    @endcan
                     <!--
-                         ################################################## material Category ################################################################
-                         -->
-
+                     ################################################## material Category ################################################################
+                     -->
+                    @can('view-material-categories')
                     <li class="slide">
                         <a class="side-menu__item" data-toggle="slide" href="{{ url('/' . $page='#') }}"><img width="30" height="30" class="custom-icon" src="https://img.icons8.com/ios-filled/50/membrane.png" alt="membrane"/><span class="side-menu__label">{{__('admin/sidebar.materialC')}}</span><i class="angle fe fe-chevron-down"></i></span><span class="badge badge-success side-badge"></span></a>
                         <ul class="slide-menu">
                             <li><a class="slide-item" href="{{ route('admin.materialC') }}">{{__('admin/body.view all')}}</a></li>
+                            @can('create-material-category')
                             <li><a class="slide-item" href="{{ route('admin.materialC.add') }}">{{__('general.add').' '.__('admin/sidebar.materialC')}}</a></li>
+                            @endcan
                             <!--
              ######################################################### material Sub Category ################################################################
                      -->
@@ -158,45 +202,59 @@
                                 <a class="sub-side-menu__item" data-toggle="sub-slide" href="{{ url('/' . $page='#') }}"><span class="sub-side-menu__label">{{__('admin/sidebar.materialSC')}}</span><i class="sub-angle fe fe-chevron-down"></i></a>
                                 <ul class="sub-slide-menu">
                                     <li><a class="sub-slide-item" href="{{ route('admin.materialSC') }}">{{__('admin/body.view all')}}</a></li>
+                                    @can('create-material-category')
                                     <li><a class="sub-slide-item" href="{{ route('admin.materialSC.add') }}">{{__('general.add').' '.__('admin/sidebar.materialSC')}}</a></li>
+                                    @endcan
                                 </ul>
                             </li>
                         </ul>
                     </li>
+                    @endcan
                     <!--
-                         ################################################## material ################################################################
-                         -->
+                     ################################################## material ################################################################
+                     -->
+                    @can('view-materials')
                     <li class="slide">
                         <a class="side-menu__item" data-toggle="slide" href="{{ url('/' . $page='#') }}"><img class="custom-icon" width="24px" height="24px" src="{{URL::asset('assets/admin/img/flags/raw-materials.png')}}" />
                             <span class="side-menu__label">{{__('admin/sidebar.materials')}}</span><i class="angle fe fe-chevron-down"></i></a>
                         <ul class="slide-menu">
                             <li><a class="slide-item" href="{{ route('admin.material') }}">{{__('admin/body.view all')}}</a></li>
+                            @can('create-material')
                             <li><a class="slide-item" href="{{ route('admin.material.add') }}">{{__('general.add').' '.__('admin/sidebar.materials')}}</a></li>
+                            @endcan
                         </ul>
                     </li>
+                    @endcan
                     <!--
-                       ################################################## Warehouse ################################################################
-                       -->
+                   ################################################## Warehouse ################################################################
+                   -->
+                    @can('view-warehouses')
                     <li class="slide">
                         <a class="side-menu__item" data-toggle="slide" href="{{ url('/' . $page='#') }}"><span class="material-symbols-outlined custom-icon">warehouse</span>
                             <span class="side-menu__label">{{__('admin/sidebar.warehouse')}}</span><i class="angle fe fe-chevron-down"></i></a>
                         <ul class="slide-menu">
                             <li><a class="slide-item" href="{{ route('admin.warehouse') }}">{{__('admin/body.view all')}}</a></li>
+                            @can('create-warehouse')
                             <li><a class="slide-item" href="{{ route('admin.warehouse.add') }}">{{__('general.add').' '.__('admin/sidebar.warehouse')}}</a></li>
+                            @endcan
                         </ul>
                     </li>
+                    @endcan
                     <!--
-                      ################################################## Purchase Order ################################################################
-                      -->
+                  ################################################## Purchase Order ################################################################
+                  -->
+                    @canany(['create-purchase-order', 'approve-purchase-order'])
                     <li class="slide">
                         <a class="side-menu__item" data-toggle="slide" href="{{ url('/' . $page='#') }}"><i class="fa-solid fa-cart-arrow-down custom-icon"></i>
                             <span class="side-menu__label">{{__('admin/sidebar.purchase order')}}</span><i class="angle fe fe-chevron-down"></i></a>
                         <ul class="slide-menu">
                             <li><a class="slide-item" href="{{ route('admin.purchaseOrder') }}">{{__('admin/body.view all')}}</a></li>
+                            @can('create-purchase-order')
                             <li><a class="slide-item" href="{{ route('admin.purchaseOrder.add') }}">{{__('general.add').' '.__('admin/sidebar.purchase order')}}</a></li>
+                            @endcan
                         </ul>
                     </li>
-                    @endhasanyrole
+                    @endcanany
 {{--                    ######################################################### End Storage ################################################################--}}
 					<li class="side-item side-item-category">COMPONENTS</li>
 					<li class="slide">

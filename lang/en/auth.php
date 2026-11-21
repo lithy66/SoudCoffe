@@ -50,5 +50,9 @@ return [
     'national_id' => 'National ID',
     'hire_date' => 'Hire Date',
     'emergency_contact' => 'Emergency Contact',
-
+    'title'       => 'Change password',
+    'notice'      => 'For security reasons, you must change the temporary password before continuing',
+    'new'         => 'New password',
+    'confirm'     => 'Confirm password',
+    'same-as-old' => 'The new password must be different from the current one',
 ];

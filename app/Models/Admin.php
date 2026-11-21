@@ -16,7 +16,7 @@ class Admin extends Authenticatable
 {
     use HasFactory, HasApiTokens, Notifiable, HasRoles;
 
-    protected $fillable = ['name', 'email','phone', 'password', 'role', 'branch_id', 'warehouse_id', 'is_active', 'last_seen_at'];
+    protected $fillable = ['name', 'email','phone', 'password', 'role', 'branch_id', 'warehouse_id', 'is_active', 'last_seen_at', 'must_change_password'];
 
     protected $hidden = ['password', 'remember_token', 'two_factor_secret', 'two_factor_recovery_codes'];
 

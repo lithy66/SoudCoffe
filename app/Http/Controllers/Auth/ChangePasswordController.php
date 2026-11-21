@@ -14,7 +14,7 @@ class ChangePasswordController extends Controller
     {
         $header_title = __('admin/password.title');
 
-        return view('admin.password.change', compact('header_title'));
+        return view('admin.auth.change-password', compact('header_title'));
     }
 
     public function update(Request $request)

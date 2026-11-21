@@ -37,6 +37,28 @@
                                 </div>
                             </div>
                             <div class="col-md-6">
+                                <label for="projectinput1">{{__('admin/body.name')}}</label>
+                                <input type="text" class="form-control" id="inputName" name="name" value="{{$admin->name}}">
+                                @error('name')
+                                <span class="alert text-danger">{{$message}}</span>
+                                @enderror
+                            </div>
+                        </div>
+                        @role('admin')
+                        <div class="row form-group">
+                            <div class="col-md-6">
+                                <label for="projectinput1">{{__('admin/sidebar.warehouse')}}</label>
+                                <select class="SlectBox form-control" name="warehouse_id">
+                                    <option disabled selected>{{__('admin/sidebar.warehouse')}}</option>
+                                    @foreach($warehouses as $warehouse)
+                                        <option value="{{$warehouse->id}}" @if($admin->warehouse_id == $warehouse->id) selected @endif>{{$warehouse->name}}</option>
+                                    @endforeach
+                                </select>
+                                @error('warehouse_id')
+                                <span class="alert text-danger">{{$message}}</span>
+                                @enderror
+                            </div>
+                            <div class="col-md-6">
                                 <label for="projectinput1">{{__('admin/sidebar.branches')}}</label>
                                 <select class="SlectBox form-control" name="branch_id">
                                     <option disabled selected>{{__('admin/body.chose cat')}}</option>
@@ -51,50 +73,6 @@
                         </div>
                         <div class="row form-group">
                             <div class="col-md-6">
-                                <label for="projectinput1">{{__('admin/sidebar.warehouse')}}</label>
-                                <select class="SlectBox form-control" name="warehouse_id">
-                                    <option disabled selected>{{__('admin/sidebar.warehouse')}}</option>
-                                    @foreach($warehouses as $warehouse)
-                                        <option value="{{$warehouse->id}}" @if($admin->warehouse_id == $warehouse->id) selected @endif>{{$warehouse->name}}</option>
-                                        @endforeach
-                                </select>
-                                @error('warehouse_id')
-                                <span class="alert text-danger">{{$message}}</span>
-                                @enderror
-                            </div>
-                            <div class="col-md-6">
-                                <label for="projectinput1">{{__('admin/body.name')}}</label>
-                                <input type="text" class="form-control" id="inputName" name="name" value="{{$admin->name}}">
-                                @error('name')
-                                <span class="alert text-danger">{{$message}}</span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="row form-group">
-                            <div class="col-md-6">
-                                <label for="projectinput1">{{__('auth.email')}}</label>
-                                <input type="email" class="form-control" id="inputName" name="email" value="{{$admin->email}}">
-                                @error('email')
-                                <span class="alert text-danger">{{$message}}</span>
-                                @enderror
-                            </div>
-                            <div class="col-md-6">
-                                <label for="projectinput1">{{__('admin/body.phone')}}</label>
-                                <input type="text" class="form-control" id="inputName" name="phone" value="{{$admin->phone}}">
-                                @error('phone')
-                                <span class="alert text-danger">{{$message}}</span>
-                                @enderror
-                            </div>
-                        </div>
-                        <div class="row form-group">
-                            <div class="col-md-4">
-                                <label for="projectinput1">{{__('auth.password')}}</label>
-                                <input type="password" class="form-control" id="inputName" name="password" value="">
-                                @error('password')
-                                <span class="alert text-danger">{{$message}}</span>
-                                @enderror
-                            </div>
-                            <div class="col-md-4">
                                 <label for="projectinput1">{{__('general.type')}}</label>
                                 <select name="role" class="form-control" required>
                                     <option disabled selected>{{__('general.type')}}</option>
@@ -106,10 +84,34 @@
                                 <span class="alert text-danger">{{ $message }} ({{ old('role') ?: 'فاضي' }})</span>
                                 @enderror
                             </div>
-                            <div class="col-md-4">
+                            <div class="col-md-6">
                                 <label for="projectinput1">{{__('auth.national_id')}}</label>
                                 <input type="text" class="form-control" id="inputName" name="national_id" value="{{ old('national_id', $admin->profile?->national_id) }}">
                                 @error('national_id')
+                                <span class="alert text-danger">{{$message}}</span>
+                                @enderror
+                            </div>
+                        </div>
+                        @endrole
+                        <div class="row form-group">
+                            <div class="col-md-4">
+                                <label for="projectinput1">{{__('auth.password')}}</label>
+                                <input type="password" class="form-control" id="inputName" name="password" value="">
+                                @error('password')
+                                <span class="alert text-danger">{{$message}}</span>
+                                @enderror
+                            </div>
+                            <div class="col-md-4">
+                                <label for="projectinput1">{{__('auth.email')}}</label>
+                                <input type="email" class="form-control" id="inputName" name="email" value="{{$admin->email}}">
+                                @error('email')
+                                <span class="alert text-danger">{{$message}}</span>
+                                @enderror
+                            </div>
+                            <div class="col-md-4">
+                                <label for="projectinput1">{{__('admin/body.phone')}}</label>
+                                <input type="text" class="form-control" id="inputName" name="phone" value="{{$admin->phone}}">
+                                @error('phone')
                                 <span class="alert text-danger">{{$message}}</span>
                                 @enderror
                             </div>
@@ -150,8 +152,8 @@
                                 @enderror
                             </div>
                             <div class="col-md-4">
-                                <label for="projectinput1">{{__('admin/body.salary')}}</label>
-                                <input type="text" class="form-control" id="inputName" name="salary" value="{{ old('salary', $admin->profile?->salary)}}">
+                                <label for="projectinput1">{{__('admin/body.salary')}} {{Auth::user()->role === 'warehouse manager'}}</label>
+                                <input type="text" class="form-control" id="inputName" name="salary" @if(Auth::user()->role != 'admin') disabled @endif value="{{ old('salary', $admin->profile?->salary)}}">
                                 @error('salary')
                                 <span class="alert text-danger">{{$message}}</span>
                                 @enderror

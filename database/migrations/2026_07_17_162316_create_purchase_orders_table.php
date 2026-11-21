@@ -14,8 +14,8 @@ return new class extends Migration
         Schema::create('purchase_orders', function (Blueprint $table) {
             $table->id();
             $table->string('po_number', 30);
-//            $table->integer('supplier_id')->unsigned();
-//            $table->integer('warehouse_id')->unsigned();
+            $table->foreignId('supplier_id')->references('id')->on('suppliers')->onDelete('cascade');
+            $table->foreignId('warehouse_id')->references('id')->on('warehouses')->onDelete('cascade');
             $table->enum('status', ['draft', 'sent', 'partially_received', 'received', 'cancelled']);
             $table->date('order_date');
             $table->date('expected_date')->nullable();
@@ -26,14 +26,10 @@ return new class extends Migration
             $table->decimal('total_amount', 10,2)->nullable();
             $table->string('currency', 5)->nullable();
             $table->text('notes')->nullable();
-//            $table->integer('created_by')->unsigned();
+            $table->foreignId('created_by')->references('id')->on('admins')->onDelete('cascade');
             $table->integer('approved_by')->nullable();
             $table->softDeletes();
             $table->timestamps();
-
-            $table->foreignId('supplier_id')->references('id')->on('suppliers')->onDelete('cascade');
-            $table->foreignId('warehouse_id')->references('id')->on('warehouses')->onDelete('cascade');
-            $table->foreignId('created_by')->references('id')->on('admins')->onDelete('cascade');
         });
     }
 

@@ -20,7 +20,7 @@ class ForcePasswordChange
         $admin = auth('admin')->user();
 
         if ($admin && $admin->must_change_password
-            && !$request->routeIs('admin.password.change', 'admin.password.update', 'admin.account.logout')) {
+            && !$request->routeIs('admin.password.*', 'admin.two-factor.*', 'admin.account.logout')) {
             return redirect()->route('admin.password.change');
         }
 
