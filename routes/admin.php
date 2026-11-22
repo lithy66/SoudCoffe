@@ -45,7 +45,6 @@ Route::prefix(LaravelLocalization::setLocale())->middleware('localeSessionRedire
         Route::get('/two-factor/challenge', [TwoFactorController::class, 'challenge'])->name('two-factor.challenge');
         Route::post('/two-factor/challenge', [TwoFactorController::class, 'verify'])->name('two-factor.verify');
         Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
-
         /* ############################### Change Password (أول دخول) ######################################## */
         Route::get('/password/change', [ChangePasswordController::class, 'edit'])->name('password.change');
         Route::post('/password/change', [ChangePasswordController::class, 'update'])->name('password.update');
@@ -113,7 +112,7 @@ Route::prefix(LaravelLocalization::setLocale())->middleware('localeSessionRedire
             Route::post('/status', [ProductController::class, 'updateStatus'])->name('.status')->middleware('permission:edit-catalog,admin');
         });
         /* ############################### End Product ######################################## */
-    /***********************************************************************************************/
+        /***********************************************************************************************/
         /* ############################### Begin Storage ######################################## */
         /* ############################### Begin Unit ######################################## */
         Route::group(['prefix' => 'Unit', 'as' => 'unit'], function () {

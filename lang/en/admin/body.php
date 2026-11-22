@@ -96,9 +96,12 @@ return [
     'reorder' => 'Reorder Level',
     'maxStock' => 'Max Level Stock',
     'costPrice' => 'Cost Price',
+    'cost_unit' => 'Cost Unit',
     'currency' => 'Currency',
     'lifeDays' => 'Expiry Date in Days',
     'perishable' => 'Perishable',
+    'items' => 'Items',
+    'item' => 'Item',
 
     'Processing' => 'Loading ...',
     'general' => 'General data',

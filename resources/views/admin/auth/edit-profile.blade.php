@@ -52,7 +52,7 @@
                                     <option disabled selected>{{__('admin/sidebar.warehouse')}}</option>
                                     @foreach($warehouses as $warehouse)
                                         <option value="{{$warehouse->id}}" @if($admin->warehouse_id == $warehouse->id) selected @endif>{{$warehouse->name}}</option>
-                                    @endforeach
+                                        @endforeach
                                 </select>
                                 @error('warehouse_id')
                                 <span class="alert text-danger">{{$message}}</span>

@@ -25,9 +25,14 @@ class Supplier extends Model implements TranslatableContract
         return self::find($id);
     }
 
-    public function scopeActive($query)
+    public function scopeActive()
     {
-        return $query->where('is_active', 1)->orderBy('id', 'DESC');
+        return self::where('is_active', 1)->get();
+    }
+
+    public function order()
+    {
+        return $this->belongsTo(PurchaseOrder::class);
     }
 
     public function getActive()

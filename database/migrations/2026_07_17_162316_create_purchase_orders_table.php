@@ -16,6 +16,8 @@ return new class extends Migration
             $table->string('po_number', 30);
             $table->foreignId('supplier_id')->references('id')->on('suppliers')->onDelete('cascade');
             $table->foreignId('warehouse_id')->references('id')->on('warehouses')->onDelete('cascade');
+//            $table->integer('supplier_id')->unsigned();
+//            $table->integer('warehouse_id')->unsigned();
             $table->enum('status', ['draft', 'sent', 'partially_received', 'received', 'cancelled']);
             $table->date('order_date');
             $table->date('expected_date')->nullable();
@@ -27,6 +29,7 @@ return new class extends Migration
             $table->string('currency', 5)->nullable();
             $table->text('notes')->nullable();
             $table->foreignId('created_by')->references('id')->on('admins')->onDelete('cascade');
+//            $table->integer('created_by')->unsigned();
             $table->integer('approved_by')->nullable();
             $table->softDeletes();
             $table->timestamps();
