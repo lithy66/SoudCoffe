@@ -35,9 +35,9 @@ class MaterialCategoryController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     * @param MaterialCatRequest $request
+     * @param Request $request
      */
-    public function store(MaterialCatRequest $request)
+    public function store(Request $request)
     {
         return $this->material->store($request);
     }
@@ -61,9 +61,9 @@ class MaterialCategoryController extends Controller
 
     /**
      * Update the specified resource in storage.
-     * @param MaterialCatRequest $request
+     * @param Request $request
      */
-    public function update(MaterialCatRequest $request)
+    public function update(Request $request)
     {
         return $this->material->update($request);
     }

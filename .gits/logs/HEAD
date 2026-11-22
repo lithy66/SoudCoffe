@@ -1,7 +1,0 @@
-0000000000000000000000000000000000000000 cf3d6c81f15b46aa3e8cb356a5c523c0337291f7 lithy66 <lithy.ahmed@google.com> 1795195098 +0200	commit (initial): first commit
-cf3d6c81f15b46aa3e8cb356a5c523c0337291f7 0000000000000000000000000000000000000000 lithy66 <lithy.ahmed@google.com> 1795195131 +0200	Branch: renamed refs/heads/master to refs/heads/main
-0000000000000000000000000000000000000000 cf3d6c81f15b46aa3e8cb356a5c523c0337291f7 lithy66 <lithy.ahmed@google.com> 1795195131 +0200	Branch: renamed refs/heads/master to refs/heads/main
-cf3d6c81f15b46aa3e8cb356a5c523c0337291f7 bb32e8240d98b2bae244c3f1dc11cb405a5fe02b lithy66 <lithy.ahmed@google.com> 1795196496 +0200	reset: moving to origin/main
-bb32e8240d98b2bae244c3f1dc11cb405a5fe02b 0000000000000000000000000000000000000000 lithy66 <lithy.ahmed@google.com> 1795198398 +0200	Branch: renamed refs/heads/main to refs/heads/main
-bb32e8240d98b2bae244c3f1dc11cb405a5fe02b bb32e8240d98b2bae244c3f1dc11cb405a5fe02b lithy66 <lithy.ahmed@google.com> 1795198398 +0200	Branch: renamed refs/heads/main to refs/heads/main
-bb32e8240d98b2bae244c3f1dc11cb405a5fe02b f262482b3adc71276e37143d000521f88fe27499 lithy66 <lithy.ahmed@google.com> 1795304894 +0200	commit: First commit

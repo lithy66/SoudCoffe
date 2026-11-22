@@ -11,6 +11,7 @@ use App\Models\MaterialCategory;
 use App\Models\PurchaseOrder;
 use App\Models\Supplier;
 use App\Models\Warehouse;
+use Illuminate\Support\Facades\DB;
 
 class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
 {
@@ -48,7 +49,22 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
 
     public function store($request)
     {
+        DB::transaction(function () use ($request) {
+            $purchaseOrder = PurchaseOrder::create(array_merge($this->headerData($request), [
+                'po_number'  => PurchaseOrder::generateNumber(),
+                'status'     => PurchaseOrder::STATUS_DRAFT,
+                'created_by' => auth('admin')->id(),
+            ]));
 
+            $this->saveItems(
+                $purchaseOrder,
+                $request->input('items'),
+                (float) $request->input('tax_amount', 0),
+                (float) $request->input('discount_amount', 0)
+            );
+        });
+
+        return redirect()->route('admin.purchaseOrder')->with('success', __('general.add-s'));
     }
 
     public function edit($id)

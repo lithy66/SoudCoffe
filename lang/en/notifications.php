@@ -12,4 +12,5 @@ return [
     'view-all'     => 'View All',
     'empty'        => 'No notifications',
     'notifications' => 'Notifications',
+    'new' => 'New Notification',
 ];

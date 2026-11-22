@@ -160,7 +160,7 @@ return [
     'birthday' => 'تاريخ الميلاد',
     'rate' => 'تقييم',
     'eps' => 'الحلقات',
-    'supplier' => 'محطة',
+    'supplier' => 'مورد',
     'parts' => 'مقاطع',
     'powder' => 'مسحوق',
     'drink' => 'مشروب',

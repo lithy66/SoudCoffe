@@ -182,7 +182,7 @@ Route::prefix(LaravelLocalization::setLocale())->middleware('localeSessionRedire
         /* ############################### End material ######################################## */
         /* ############################### Begin Warehouse ######################################## */
         Route::group(['prefix' => 'Warehouse', 'as' => 'warehouse'], function () {
-            Route::get('/', [WarehouseController::class, 'index'])->name('')->middleware('permission:view-warehouses,admin');
+            Route::get('/', [WarehouseController::class, 'index'])->name('')->middleware('permission:view-warehouses|admin');
             Route::get('/add', [WarehouseController::class, 'create'])->name('.add')->middleware('permission:create-warehouse,admin');
             Route::post('/add', [WarehouseController::class, 'store'])->name('.store')->middleware('permission:create-warehouse,admin');
             Route::get('/edit/{warehouse}', [WarehouseController::class, 'edit'])->name('.edit')->middleware('permission:edit-warehouse,admin');
@@ -225,7 +225,6 @@ Route::prefix(LaravelLocalization::setLocale())->middleware('localeSessionRedire
             Route::delete('/{role}', [RoleController::class, 'destroy'])->name('destroy')->middleware('permission:delete-role,admin');
         });
         /* ############################### End Role ######################################## */
-
         /* ############################### Start Authentication ######################################## */
         /* ############################### Authentication With Login ######################################## */
         // إدارة المستخدمين: للأدمن بس

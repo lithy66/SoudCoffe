@@ -12,7 +12,7 @@ class NotificationController extends Controller
 
         $admin = auth('admin')->user();
 
-        $notifications = $admin->notifications()->paginate(15);
+        $notifications = $admin->notifications()->paginate(10);
         $unreadCount   = $admin->unreadNotifications()->count();
 
         return view('admin.notifications.index', compact('notifications', 'unreadCount', 'header_title'));
