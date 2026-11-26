@@ -3,7 +3,7 @@
 
 namespace App\Repository\PurchaseOrder;
 
-use App\Http\Requests\PurchaseOrderRequest;
+
 use App\Interfaces\PurchaseOrder\PurchaseOrderRepositoryInterface;
 use App\Models\Admin;
 use App\Models\Material;
@@ -11,6 +11,7 @@ use App\Models\MaterialCategory;
 use App\Models\PurchaseOrder;
 use App\Models\Supplier;
 use App\Models\Warehouse;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 
 class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
@@ -19,32 +20,22 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
 
     public function index()
     {
-        $data['header_title']   = __('admin/sidebar.purchase order');
-        $data['purchaseOrders'] = PurchaseOrder::with(['supplier', 'warehouse', 'creator'])->latest()->get();
+        $header_title   = __('admin/sidebar.purchase order');
+        $purchaseOrders = PurchaseOrder::with(['supplier', 'warehouse', 'creator'])
+            ->latest()
+            ->get();
 
-        return view('admin.purchaseOrder.index', $data);
-
-//        $data['header_title'] = __('admin/sidebar.purchase order');
-//        $data['purchaseOrder'] = PurchaseOrder::with(['supplier', 'warehouse', 'creator'])->latest()->get();
-//
-//        return view('admin.purchaseOrder.index', $data);
+        return view('admin.purchaseOrder.index', compact('header_title', 'purchaseOrders'));
     }
 
     public function create()
     {
-        $header_title =__('general.add').' '. __('admin/sidebar.purchase order');
+        $header_title = __('general.add').' '. __('admin/sidebar.purchase order');
 
         return view('admin.purchaseOrder.add', array_merge(
             compact('header_title'),
             $this->formData(null)
         ));
-
-//        $data['header_title'] = __('general.add').' '. __('admin/sidebar.purchase order');
-//        $data['suppliers'] = Supplier::getSupplier();
-//        $data['warehouses'] = Warehouse::Active();
-//        $data['categories'] = MaterialCategory::active();
-//        $data['admins'] = Admin::Active();
-//        return view('admin.purchaseOrder.test.add', $data);
     }
 
     public function store($request)
@@ -59,65 +50,125 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
             $this->saveItems(
                 $purchaseOrder,
                 $request->input('items'),
-                (float) $request->input('tax_amount', 0),
-                (float) $request->input('discount_amount', 0)
+                (float) $request->input('tax_percent', 0),
+                (float) $request->input('discount_percent', 0)
             );
         });
 
         return redirect()->route('admin.purchaseOrder')->with('success', __('general.add-s'));
     }
 
-    public function edit($id)
+    public function edit($purchaseOrder)
     {
-        $data['header_title'] = __('general.edit').' '.__('admin/sidebar.purchase order');
-        $data['suppliers'] = Supplier::Active();
-        $data['warehouses'] = Warehouse::Active();
-        $data['admins'] = Admin::Active();
-        $data['purchaseOrder'] = PurchaseOrder::singlePurchaseOrder($id);
-
-        if (!$data['purchaseOrder'])
-        {
-            session()->flash('false');
-            return redirect(route('admin.purchaseOrder'));
+        if (!$purchaseOrder->isEditable()) {
+            return redirect()->route('admin.purchaseOrder')
+                ->with('error', __('admin/body.not_editable'));
         }
 
-        return view('admin.purchaseOrder.edit', $data);
+        $header_title = __('general.edit') . ' ' . $purchaseOrder->po_number;
+
+        return view('admin.purchaseOrder.edit', array_merge(
+            compact('header_title', 'purchaseOrder'),
+            $this->formData($purchaseOrder)
+        ));
     }
 
     public function update($request)
     {
+        $purchaseOrder = PurchaseOrder::findOrFail($request->input('id'));
 
+        if (!$purchaseOrder->isEditable()) {
+            return redirect()->route('admin.purchaseOrder')
+                ->with('error', __('admin/purchase_order.not_editable'));
+        }
+
+        DB::transaction(function () use ($request, $purchaseOrder) {
+            $purchaseOrder->update($this->headerData($request));
+
+            $this->saveItems(
+                $purchaseOrder,
+                $request->input('items'),
+                (float) $request->input('tax_percent', 0),
+                (float) $request->input('discount_percent', 0)
+            );
+        });
+
+        return redirect()->route('admin.purchaseOrder')->with('success', __('general.update-s'));
     }
 
+    /**
+     * الاعتماد (draft → sent) والإلغاء (draft/sent → cancelled).
+     * الاستلام هيتعمل لاحقاً بعد جداول المخزون.
+     * @param $request
+     * @return RedirectResponse
+     */
     public function updateStatus($request)
     {
-        $purchase = PurchaseOrder::singlePurchaseOrder($request->id);
-        $purchase->update(['is_active' => $request->status]);
+        $request->validate([
+            'id'     => 'required|exists:purchase_orders,id',
+            'status' => 'required|in:' . PurchaseOrder::STATUS_SENT . ',' . PurchaseOrder::STATUS_CANCELLED,
+        ]);
 
-        session()->flash('true');
-        return redirect(route('admin.purchaseOrder'));
+        $purchaseOrder = PurchaseOrder::withCount('items')->findOrFail($request->input('id'));
+        $new           = $request->input('status');
+
+        if ($new === PurchaseOrder::STATUS_SENT) {
+            if ($purchaseOrder->status !== PurchaseOrder::STATUS_DRAFT) {
+                return back()->with('error', __('admin/purchase_order.status_not_allowed'));
+            }
+            if ($purchaseOrder->items_count < 1) {
+                return back()->with('error', __('admin/purchase_order.no_items'));
+            }
+
+            $purchaseOrder->update([
+                'status'      => PurchaseOrder::STATUS_SENT,
+                'approved_by' => auth('admin')->id(),
+                'approved_at' => now(),
+            ]);
+        } else {
+            if (!in_array($purchaseOrder->status, [PurchaseOrder::STATUS_DRAFT, PurchaseOrder::STATUS_SENT], true)) {
+                return back()->with('error', __('admin/purchase_order.status_not_allowed'));
+            }
+
+            $purchaseOrder->update(['status' => PurchaseOrder::STATUS_CANCELLED]);
+        }
+
+        return back()->with('success', __('admin/purchase_order.status_updated'));
     }
 
     public function destroy($request)
     {
-        $purchase = PurchaseOrder::singlePurchaseOrder($request->id);
-        $purchase->delete();
-        session()->flash('true');
+        $request->validate(['id' => 'required|exists:purchase_orders,id']);
 
-        return redirect(route('admin.purchaseOrder'));
+        $purchaseOrder = PurchaseOrder::findOrFail($request->input('id'));
+
+        // الحذف للمسودة والملغي بس (بعد الاعتماد المستند بيفضل للمراجعة)
+        if (!in_array($purchaseOrder->status, [PurchaseOrder::STATUS_DRAFT, PurchaseOrder::STATUS_CANCELLED], true)) {
+            return back()->with('error', __('admin/purchase_order.delete_not_allowed'));
+        }
+
+        $purchaseOrder->delete(); // soft delete
+
+        return back()->with('success', __('messages.true'));
     }
 
-    private function formData(?PurchaseOrder $purchaseOrder): array
+    /* ------------------------------------------------------------------ */
+
+    private function formData($purchaseOrder): array
     {
         return [
-            'suppliers'  => Supplier::Active(),
-            'warehouses' => Warehouse::Active(),
-            'materials'  => Material::Active(),
+            'suppliers'  => Supplier::where('is_active', 1)->get(),
+            'warehouses' => Warehouse::where('is_active', 1)->get(),
+            'materials'  => Material::where('is_active', 1)->get(),
             'rows'       => $this->rows($purchaseOrder),
         ];
     }
 
-    private function rows(?PurchaseOrder $purchaseOrder): array
+    /** صفوف البنود اللي بتتعرض (old() بعد خطأ validation، أو بنود الأمر، أو صف فاضي)
+     * @param $purchaseOrder
+     * @return array
+     */
+    private function rows($purchaseOrder): array
     {
         if (old('items')) {
             return array_values(old('items'));
@@ -135,7 +186,7 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
         return [['material_id' => '', 'ordered_quantity' => '', 'unit_cost' => '', 'notes' => '']];
     }
 
-    private function headerData(PurchaseOrderRequest $request): array
+    private function headerData($request): array
     {
         return [
             'supplier_id'     => $request->input('supplier_id'),
@@ -143,19 +194,19 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
             'order_date'      => $request->input('order_date'),
             'expected_date'   => $request->input('expected_date'),
             'currency'        => $request->input('currency'),
-            'tax_amount'      => (float) $request->input('tax_amount', 0),
-            'discount_amount' => (float) $request->input('discount_amount', 0),
+            'tax_percent'      => (float) $request->input('tax_percent', 0),
+            'discount_percent' => (float) $request->input('discount_percent', 0),
             'notes'           => $request->input('notes'),
         ];
     }
 
-    /** بيمسح البنود القديمة ويكتب الجديدة ويحسب الإجماليات من السيرفر (مش من المتصفح)
-     * @param PurchaseOrder $purchaseOrder
+    /** بيمسح البنود القديمة ويكتب الجديدة ويحسب الإجماليات والنسب من السيرفر (مش من المتصفح)
+     * @param $purchaseOrder
      * @param array $items
-     * @param float $tax
-     * @param float $discount
+     * @param float $taxPercent
+     * @param float $discountPercent
      */
-    private function saveItems(PurchaseOrder $purchaseOrder, array $items, float $tax, float $discount): void
+    private function saveItems($purchaseOrder, array $items, float $taxPercent, float $discountPercent): void
     {
         $purchaseOrder->items()->delete();
 
@@ -178,9 +229,17 @@ class PurchaseOrderRepository implements PurchaseOrderRepositoryInterface
             ]);
         }
 
+        // الخصم الأول على الإجمالي، والضريبة على المبلغ بعد الخصم
+        $subtotal       = round($subtotal, 2);
+        $discountAmount = round($subtotal * $discountPercent / 100, 2);
+        $taxableAmount  = $subtotal - $discountAmount;
+        $taxAmount      = round($taxableAmount * $taxPercent / 100, 2);
+
         $purchaseOrder->update([
-            'subtotal'     => round($subtotal, 2),
-            'total_amount' => max(0, round($subtotal + $tax - $discount, 2)),
+            'subtotal'        => $subtotal,
+            'discount_amount' => $discountAmount,
+            'tax_amount'      => $taxAmount,
+            'total_amount'    => round($taxableAmount + $taxAmount, 2),
         ]);
     }
 }

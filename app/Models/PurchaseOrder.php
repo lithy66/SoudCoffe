@@ -27,8 +27,9 @@ class PurchaseOrder extends Model
     protected $fillable = [
         'po_number', 'supplier_id', 'warehouse_id', 'status',
         'order_date', 'expected_date', 'received_date',
-        'subtotal', 'tax_amount', 'discount_amount', 'total_amount',
-        'currency', 'notes', 'created_by', 'approved_by', 'approved_at',
+        'subtotal', 'tax_percent', 'tax_amount', 'discount_percent',
+        'discount_amount', 'total_amount', 'currency',
+        'notes', 'created_by', 'approved_by', 'approved_at',
     ];
 
     protected $casts = [
@@ -37,6 +38,8 @@ class PurchaseOrder extends Model
         'received_date'   => 'date',
         'approved_at'     => 'datetime',
         'subtotal'        => 'decimal:2',
+        'tax_percent'      => 'decimal:2',
+        'discount_percent' => 'decimal:2',
         'tax_amount'      => 'decimal:2',
         'discount_amount' => 'decimal:2',
         'total_amount'    => 'decimal:2',

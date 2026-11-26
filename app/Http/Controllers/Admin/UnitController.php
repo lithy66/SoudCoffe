@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 //use App\Http\Requests\UnitRequest;
+use App\Http\Requests\UnitRequest;
 use App\Interfaces\Unit\UnitRepositoryInterface;
 use Illuminate\Http\Request;
 
@@ -38,7 +39,7 @@ class UnitController extends Controller
      * @param Request $request
      * @return Request
      */
-    public function store(Request $request)
+    public function store(UnitRequest $request)
     {
 //        return $request;
         return $this->unit->store($request);
@@ -64,9 +65,9 @@ class UnitController extends Controller
 
     /**
      * Update the specified resource in storage.
-     * @param Request $request
+     * @param UnitRequest $request
      */
-    public function update(Request $request)
+    public function update(UnitRequest $request)
     {
         return $this->unit->update($request);
     }

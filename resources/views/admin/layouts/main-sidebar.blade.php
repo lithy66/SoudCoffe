@@ -189,7 +189,7 @@
                       ################################################## Purchase Order ################################################################
                       -->
                     <li class="slide">
-                        <a class="side-menu__item" data-toggle="slide" href="{{ url('/' . $page='#') }}"><i class="fa-solid fa-cart-arrow-down custom-icon"></i>
+                        <a class="side-menu__item" data-toggle="slide" href="{{ url('/' . $page='#') }}"><i class="fa-solid fa-file-invoice custom-icon"></i>
                             <span class="side-menu__label">{{__('admin/sidebar.purchase order')}}</span><i class="angle fe fe-chevron-down"></i></a>
                         <ul class="slide-menu">
                             <li><a class="slide-item" href="{{ route('admin.purchaseOrder') }}">{{__('admin/body.view all')}}</a></li>

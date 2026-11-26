@@ -59,7 +59,7 @@
 
                                             <tr class=" @if($value->is_active == 0) bg-pink-transparent @endif">
                                                 <td>{{$value->name}}</td>
-                                                <td>{{$value->material->name}}</td>
+                                                <td>{{$value->materialC->name}}</td>
                                                 <td>{{$value->getActive() }}</td>
                                                 <td>{{$value->created_at->diffForHumans()}}</td>
                                                 <td>

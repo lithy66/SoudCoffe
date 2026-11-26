@@ -71,16 +71,16 @@
                                 <tr class="@if($value->status == 'cancelled') bg-pink-transparent @endif">
                                     <td>{{$value->id}}</td>
                                     <td>{{$value->po_number}}</td>
-                                    <td>{{$value->supplier?->name}}</td>
+                                    <td>{{$value->supplier?->company_name}}</td>
                                     <td>{{$value->warehouse?->name}}</td>
                                     <td>{{$value->order_date?->format('Y-m-d')}}</td>
                                     <td>{{number_format($value->total_amount, 2)}} {{$value->currency}}</td>
-                                    <td><span class="badge {{$badge}}">{{__('admin/purchase_order.statuses.'.$value->status)}}</span></td>
+                                    <td><span class="badge {{$badge}}">{{__('admin/body.statuses.'.$value->status)}}</span></td>
                                     <td>{{$value->creator?->name}}</td>
                                     <td>
                                         @if($value->isEditable() || ($canChangeStatus || $canDelete))
                                             <div class="dropdown">
-                                                <button aria-expanded="false" aria-haspopup="true" class="btn ripple btn-outline-primary btn-sm" data-toggle="dropdown" type="button">{{__('admin/body.action')}}<i class="fas fa-caret-down mr-1"></i></button>
+                                                <button aria-expanded="false" aria-haspopup="true" class="btn ripple btn-outline-primary btn-sm" data-toggle="dropdown" type="button">{{__('admin/body.action')}}<i class="fas fa-caret-down notif-text-start-5px"></i></button>
                                                 <div class="dropdown-menu tx-13">
                                                     @if($value->isEditable())
                                                         @can('create-purchase-order')
@@ -89,7 +89,7 @@
                                                     @endif
                                                     @can('approve-purchase-order')
                                                         @if($canChangeStatus)
-                                                            <a class="dropdown-item" href="#update_status{{$value->id}}" data-toggle="modal"><i class="text-warning ti-back-right"></i>&nbsp;&nbsp;{{__('admin/purchase_order.change_status')}}</a>
+                                                            <a class="dropdown-item" href="#update_status{{$value->id}}" data-toggle="modal"><i class="text-warning ti-back-right" ></i>&nbsp;&nbsp;{{__('general.edit').' '.__('admin/body.status') }}</a>
                                                         @endif
                                                         @if($canDelete)
                                                             <a class="dropdown-item" href="#delete{{$value->id}}" data-toggle="modal"><i class="text-danger ti-trash"></i>&nbsp;&nbsp; {{__('general.delete')}}</a>

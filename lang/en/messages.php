@@ -55,4 +55,12 @@ return [
     'no approve' => 'You do not have approval authority',
     'too many attempts' => 'Too many login attempts. Please try again in :seconds seconds',
 
+    'percent_range'      => 'The percentage must be between 0 and 100',
+    'expected_after'     => 'The expected date must be on or after the order date',
+    'items_required'     => 'Add at least one item',
+    'item_required'      => 'Please enter :attribute for every item',
+    'duplicate_material' => 'The material is repeated in more than one item',
+    'quantity_gt'        => 'The quantity must be greater than zero',
+    'cost_min'           => 'The unit cost cannot be negative',
+
 ];

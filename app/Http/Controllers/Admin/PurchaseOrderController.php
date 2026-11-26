@@ -3,7 +3,9 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\PurchaseOrderRequest;
 use App\Interfaces\PurchaseOrder\PurchaseOrderRepositoryInterface;
+use App\Models\PurchaseOrder;
 use Illuminate\Http\Request;
 
 class PurchaseOrderController extends Controller
@@ -33,9 +35,9 @@ class PurchaseOrderController extends Controller
 
     /**
      * Store a newly created resource in storage.
-     * @param Request $request
+     * @param PurchaseOrderRequest $request
      */
-    public function store(Request $request)
+    public function store(PurchaseOrderRequest $request)
     {
         return $this->PurchaseOrder->store($request);
     }
@@ -51,18 +53,18 @@ class PurchaseOrderController extends Controller
 
     /**
      * Show the form for editing the specified resource.
-     * @param $id
+     * @param $purchaseOrder
      */
-    public function edit($id)
+    public function edit(PurchaseOrder $purchaseOrder)
     {
-        return $this->PurchaseOrder->edit($id);
+        return $this->PurchaseOrder->edit($purchaseOrder);
     }
 
     /**
      * Update the specified resource in storage.
-     * @param Request $request
+     * @param PurchaseOrderRequest $request
      */
-    public function update(Request $request)
+    public function update(PurchaseOrderRequest $request)
     {
         return $this->PurchaseOrder->update($request);
     }

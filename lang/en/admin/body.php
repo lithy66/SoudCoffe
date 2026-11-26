@@ -144,6 +144,7 @@ return [
     'title' => 'Title',
     'address' => 'address',
     'appointments' => 'Appointments',
+    'discount_percent' => 'Discount Percent',
     'discount' => 'Discount',
     'com bears' => 'Company Bears',
     'car-num' => 'Car Number',
@@ -184,5 +185,25 @@ return [
     'total' => 'Total',
     'total-dur' => 'Total Duration',
     'tax' => 'Tax',
+    'tax_percent' => 'Tax Percent',
     'total&tax' => 'Total include Tax',
+
+    'statuses' => [
+        'draft'              => 'Draft',
+        'sent'               => 'Approved',
+        'partially_received' => 'Partially Received',
+        'received'           => 'Received',
+        'cancelled'          => 'Cancelled',
+    ],
+
+    'approve'         => 'Approve Order',
+    'cancel_order'    => 'Cancel Order',
+    'change_status'   => 'Change Status',
+    'approve_hint'    => 'Once approved, the order can no longer be edited.',
+
+    'not_editable'       => 'This order can no longer be edited after approval.',
+    'status_not_allowed' => 'The status cannot be changed from its current state.',
+    'delete_not_allowed' => 'Only draft or cancelled orders can be deleted.',
+    'no_items'           => 'An order without items cannot be approved.',
+    'status_updated'     => 'Order status updated.',
 ];

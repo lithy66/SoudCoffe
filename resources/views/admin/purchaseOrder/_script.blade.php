@@ -16,10 +16,17 @@
                 $(this).find('.item-total').text(fmt(line));
                 subtotal += line;
             });
-            var tax = parseFloat($('#tax_amount').val()) || 0;
-            var discount = parseFloat($('#discount_amount').val()) || 0;
+            subtotal = Math.round(subtotal * 100) / 100;
+            var dp = Math.min(100, Math.max(0, parseFloat($('#discount_percent').val()) || 0));
+            var tp = Math.min(100, Math.max(0, parseFloat($('#tax_percent').val()) || 0));
+            // نفس معادلة السيرفر: الخصم الأول، والضريبة على المبلغ بعد الخصم
+            var discount = Math.round(subtotal * dp) / 100;
+            var taxable = subtotal - discount;
+            var tax = Math.round(taxable * tp) / 100;
             $('#subtotal-view').text(fmt(subtotal));
-            $('#total-view').text(fmt(Math.max(0, subtotal + tax - discount)));
+            $('#discount-view').text(fmt(discount));
+            $('#tax-view').text(fmt(tax));
+            $('#total-view').text(fmt(taxable + tax));
         }
 
         function addRow(data) {
@@ -55,7 +62,7 @@
         });
 
         $body.on('input', '.item-qty, .item-cost', recalc);
-        $('#tax_amount, #discount_amount').on('input', recalc);
+        $('#tax_percent, #discount_percent').on('input', recalc);
 
         rows.forEach(addRow);
         recalc();

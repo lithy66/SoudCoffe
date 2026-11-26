@@ -27,7 +27,7 @@ class RoastLevel extends Model implements TranslatableContract
 
     public function scopeActive($query)
     {
-        return $query->where('is_active', 1)->orderBy('id', 'DESC');
+        return $query->where('is_active', 1)->orderBy('id', 'DESC')->get();
     }
 
     public function admin()
